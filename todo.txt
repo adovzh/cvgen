@@ -1,3 +1,2 @@
 CVGen:
-- extract it into the separate project
 - implement plain text version
