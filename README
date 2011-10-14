@@ -1,0 +1,7 @@
+Personal CV generator. It supports the notion of separation of representation from data and uses XSL Transformations for building CV.
+
+Currently supported CV formats:
+- XML
+
+Currently supported CV representation formats:
+- PDF

@@ -1,0 +1,44 @@
+<project name="CVGen" default="cvgen" basedir=".">
+    <property name="src" value="src"/>
+    <property name="src.config" value="${src}/resources"/>
+    <property name="src.config.fonts" value="${src.config}/fonts"/>
+    <property name="src.cvgen" value="${src}/xml"/>
+    <property name="build" value="build"/>
+    <property file="build.properties"/>
+    <property name="lib" value="lib"/>
+    <property name="cvgen.filename.external" value="Alexander Dovzhikov's CV"/>
+    <property name="dropbox.dir" value="${dropbox.home}/Resume/CVGen"/>
+    <!-- define conditional properties -->
+    <available file="${dropbox.dir}" type="dir" property="dropbox.dir.present"/>
+
+    <path id="classpath">
+        <fileset dir="${lib}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="init">
+        <mkdir dir="${build}"/>
+        <!-- define fop task -->
+        <taskdef name="fop" classname="org.apache.fop.tools.anttasks.Fop" classpathref="classpath"/>
+    </target>
+
+    <target name="cvgen.copy.dropbox" if="dropbox.dir.present">
+        <copy file="${build}/${cvgen.filename.external}.pdf"
+              todir="${dropbox.dir}"/>
+    </target>
+
+    <target name="cvgen" depends="init" description="Build CV">
+        <fop format="application/pdf"
+             force="true"
+             userconfig="${src.config.fonts}/userconfig.xml"
+             xmlfile="${src.cvgen}/adovzhikov-cv.xml"
+             xsltfile="${src.cvgen}/cv-default.xsl"
+             outfile="${build}/${cvgen.filename.external}.pdf"/>
+        <antcall target="cvgen.copy.dropbox"/>
+    </target>
+
+    <target name="clean" description="Delete all built files">
+        <delete dir="${build}"/>
+    </target>
+</project>
