@@ -36,7 +36,13 @@
              xsltfile="${src.cvgen}/cv-default.xsl"
              outfile="${build}/${cvgen.filename.external}.pdf"/>
         <antcall target="cvgen.copy.dropbox"/>
-    </target>
+	</target>
+
+	<target name="text" depends="init" description="Build plain text CV">
+        <xslt in="${src.cvgen}/adovzhikov-cv.xml"
+              style="${src.cvgen}/cv-text.xsl"
+              out="${build}/${cvgen.filename.external}.txt"/>
+	</target>
 
     <target name="clean" description="Delete all built files">
         <delete dir="${build}"/>
