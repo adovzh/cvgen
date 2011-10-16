@@ -54,7 +54,10 @@
         <xsl:value-of select="marital-status"/>
         <xsl:text>&#xD;&#xA;</xsl:text>
         <xsl:text>Languages:       </xsl:text>
-        <xsl:for-each select="languages/language"><xsl:value-of select="."/> (<xsl:value-of select="@type"/>)<xsl:if test="position() &lt; last()">, </xsl:if></xsl:for-each>
+        <xsl:for-each select="languages/language">
+            <xsl:value-of select="."/> (<xsl:value-of select="@type"/>)
+            <xsl:if test="position() &lt; last()">,</xsl:if>
+        </xsl:for-each>
         <xsl:text>&#xD;&#xA;</xsl:text>
         <xsl:text>Phone:           </xsl:text>
         <xsl:value-of select="phone[@type='home']"/>
@@ -84,7 +87,8 @@
         <xsl:apply-templates select="university"/>
     </xsl:template>
     <xsl:template match="university">
-        <xsl:value-of select="start-date"/>-<xsl:value-of select="end-date"/>, <xsl:value-of select="university-name"/>
+        <xsl:value-of select="start-date"/>-<xsl:value-of select="end-date"/>,
+        <xsl:value-of select="university-name"/>
         <xsl:text>&#xD;&#xA;</xsl:text>
         <xsl:text>Department:        </xsl:text>
         <xsl:value-of select="department"/>
@@ -106,19 +110,111 @@
         <xsl:value-of select="."/>
         <xsl:text>&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;</xsl:text>
     </xsl:template>
+    <!-- Summary -->
     <xsl:template match="summary">
         <xsl:call-template name="section">
             <xsl:with-param name="section-name">PROFESSIONAL SUMMARY</xsl:with-param>
         </xsl:call-template>
         <xsl:for-each select="summary-item">
-            <xsl:text>- </xsl:text>
-            <xsl:value-of select="." disable-output-escaping="yes"/>
+            <xsl:call-template name="wrap-string">
+                <xsl:with-param name="str">
+                    <xsl:text>- </xsl:text>
+                    <xsl:value-of select="normalize-space(.)"/>
+                    <xsl:text>.</xsl:text>
+                </xsl:with-param>
+                <xsl:with-param name="wrap-col">80</xsl:with-param>
+                <xsl:with-param name="break-mark">
+                    <xsl:text>&#xD;&#xA;</xsl:text>
+                </xsl:with-param>
+            </xsl:call-template>
             <xsl:text>&#xD;&#xA;</xsl:text>
         </xsl:for-each>
+        <xsl:text>&#xD;&#xA;&#xD;&#xA;</xsl:text>
     </xsl:template>
+    <!-- Skills -->
+    <xsl:template match="skills">
+        <xsl:call-template name="section">
+            <xsl:with-param name="section-name">SKILLS</xsl:with-param>
+        </xsl:call-template>
+        <xsl:for-each select="skill-set">
+            <xsl:call-template name="text-field">
+                <xsl:with-param name="str" select="concat(skill-set-name, ':')"/>
+                <xsl:with-param name="width" select="25"/>
+            </xsl:call-template>
+            <xsl:call-template name="wrap-string">
+                <xsl:with-param name="str"><xsl:for-each select="skill"><xsl:value-of select="."/><xsl:if test="position() &lt; last()">, </xsl:if></xsl:for-each>.<xsl:text>&#xD;&#xA;</xsl:text></xsl:with-param>
+                <xsl:with-param name="wrap-col">55</xsl:with-param>
+                <xsl:with-param name="break-mark">
+                    <xsl:text>&#xD;&#xA;</xsl:text>
+                    <xsl:call-template name="append-pad">
+                        <xsl:with-param name="length">25</xsl:with-param>
+                    </xsl:call-template>
+                </xsl:with-param>
+            </xsl:call-template>
+        </xsl:for-each>
+        <xsl:text>&#xD;&#xA;&#xD;&#xA;</xsl:text>
+    </xsl:template>
+    <!-- auxiliary templates -->
     <xsl:template name="section">
         <xsl:param name="section-name"/>
         <xsl:value-of select="$section-name"/>
         <xsl:text>&#xD;&#xA;&#xD;&#xA;</xsl:text>
+    </xsl:template>
+    <xsl:template name="wrap-string">
+        <xsl:param name="str"/>
+        <xsl:param name="wrap-col"/>
+        <xsl:param name="break-mark"/>
+        <xsl:param name="pos" select="0"/>
+        <xsl:choose>
+            <xsl:when test="contains( $str, ' ' )">
+                <xsl:variable name="first-word" select="substring-before( $str, ' ' )"/>
+                <xsl:variable name="pos-now" select="$pos + 1 + string-length( $first-word )"/>
+                <xsl:choose>
+                    <xsl:when test="$pos > 0 and $pos-now >= $wrap-col">
+                        <xsl:copy-of select="$break-mark"/>
+                        <xsl:call-template name="wrap-string">
+                            <xsl:with-param name="str" select="$str"/>
+                            <xsl:with-param name="wrap-col" select="$wrap-col"/>
+                            <xsl:with-param name="break-mark" select="$break-mark"/>
+                            <xsl:with-param name="pos" select="0"/>
+                        </xsl:call-template>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="$first-word"/>
+                        <xsl:text> </xsl:text>
+                        <xsl:call-template name="wrap-string">
+                            <xsl:with-param name="str" select="substring-after( $str, ' ' )"/>
+                            <xsl:with-param name="wrap-col" select="$wrap-col"/>
+                            <xsl:with-param name="break-mark" select="$break-mark"/>
+                            <xsl:with-param name="pos" select="$pos-now"/>
+                        </xsl:call-template>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:if test="$pos + string-length( $str ) >= $wrap-col">
+                    <xsl:value-of select="$break-mark"/>
+                </xsl:if>
+                <xsl:value-of select="$str"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    <xsl:template name="text-field">
+        <xsl:param name="str"/>
+        <xsl:param name="width"/>
+        <xsl:variable name="remainder" select="$width - string-length($str)"/>
+        <xsl:copy-of select="$str"/>
+        <xsl:call-template name="append-pad">
+            <xsl:with-param name="length" select="$remainder"/>
+        </xsl:call-template>
+    </xsl:template>
+    <xsl:template name="append-pad">
+        <xsl:param name="length"/>
+        <xsl:if test="$length > 0">
+            <xsl:text> </xsl:text>
+            <xsl:call-template name="append-pad">
+                <xsl:with-param name="length" select="$length - 1"/>
+            </xsl:call-template>
+        </xsl:if>
     </xsl:template>
 </xsl:stylesheet>
