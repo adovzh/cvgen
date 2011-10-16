@@ -36,8 +36,6 @@
     <xsl:variable name="applicantName" select="concat($firstName, ' ', $lastName)"/>
     <xsl:variable name="apos">'</xsl:variable>
     <xsl:template match="/">
-        <!--<xsl:apply-templates select="document/personal"/>-->
-        <!--<xsl:apply-templates select="document/education"/>-->
         <xsl:apply-templates/>
     </xsl:template>
     <xsl:template match="personal">
@@ -55,8 +53,13 @@
         <xsl:text>&#xD;&#xA;</xsl:text>
         <xsl:text>Languages:       </xsl:text>
         <xsl:for-each select="languages/language">
-            <xsl:value-of select="."/> (<xsl:value-of select="@type"/>)
-            <xsl:if test="position() &lt; last()">,</xsl:if>
+            <xsl:value-of select="."/>
+            <xsl:text> (</xsl:text>
+            <xsl:value-of select="@type"/>
+            <xsl:text>)</xsl:text>
+            <xsl:if test="position() &lt; last()">
+                <xsl:text>, </xsl:text>
+            </xsl:if>
         </xsl:for-each>
         <xsl:text>&#xD;&#xA;</xsl:text>
         <xsl:text>Phone:           </xsl:text>
@@ -87,7 +90,10 @@
         <xsl:apply-templates select="university"/>
     </xsl:template>
     <xsl:template match="university">
-        <xsl:value-of select="start-date"/>-<xsl:value-of select="end-date"/>,
+        <xsl:value-of select="start-date"/>
+        <xsl:text>-</xsl:text>
+        <xsl:value-of select="end-date"/>
+        <xsl:text>, </xsl:text>
         <xsl:value-of select="university-name"/>
         <xsl:text>&#xD;&#xA;</xsl:text>
         <xsl:text>Department:        </xsl:text>
@@ -142,7 +148,15 @@
                 <xsl:with-param name="width" select="25"/>
             </xsl:call-template>
             <xsl:call-template name="wrap-string">
-                <xsl:with-param name="str"><xsl:for-each select="skill"><xsl:value-of select="."/><xsl:if test="position() &lt; last()">, </xsl:if></xsl:for-each>.<xsl:text>&#xD;&#xA;</xsl:text></xsl:with-param>
+                <xsl:with-param name="str">
+                    <xsl:for-each select="skill">
+                        <xsl:value-of select="."/>
+                        <xsl:if test="position() &lt; last()">
+                            <xsl:text>, </xsl:text>
+                        </xsl:if>
+                    </xsl:for-each>
+                    <xsl:text>.&#xD;&#xA;</xsl:text>
+                </xsl:with-param>
                 <xsl:with-param name="wrap-col">55</xsl:with-param>
                 <xsl:with-param name="break-mark">
                     <xsl:text>&#xD;&#xA;</xsl:text>
@@ -153,6 +167,75 @@
             </xsl:call-template>
         </xsl:for-each>
         <xsl:text>&#xD;&#xA;&#xD;&#xA;</xsl:text>
+    </xsl:template>
+    <!-- Certifications -->
+    <xsl:template match="certifications">
+        <xsl:call-template name="section">
+            <xsl:with-param name="section-name">CERTIFICATIONS</xsl:with-param>
+        </xsl:call-template>
+        <xsl:for-each select="cert-provider">
+            <xsl:value-of select="@name"/>
+            <xsl:text>:&#xD;&#xA;</xsl:text>
+            <xsl:for-each select="cert">
+                <xsl:value-of select="."/>
+                <xsl:if test="@level">
+                    <xsl:text> (</xsl:text>
+                    <xsl:value-of select="@level"/>
+                    <xsl:text> Level)</xsl:text>
+                </xsl:if>
+                <xsl:text> on </xsl:text>
+                <xsl:value-of select="@date"/>
+                <xsl:if test="@expired='true'">
+                    <xsl:text>(expired)</xsl:text>
+                </xsl:if>
+                <xsl:text>&#xD;&#xA;</xsl:text>
+            </xsl:for-each>
+            <xsl:text>&#xD;&#xA;</xsl:text>
+        </xsl:for-each>
+    </xsl:template>
+    <!-- Experience -->
+    <xsl:template match="experience">
+        <xsl:call-template name="section">
+            <xsl:with-param name="section-name">PROFESSIONAL EXPERIENCE</xsl:with-param>
+        </xsl:call-template>
+        <xsl:for-each select="company">
+            <xsl:value-of select="company-name"/>
+            <xsl:text> - </xsl:text>
+            <xsl:value-of select="company-location"/>
+            <xsl:text> (</xsl:text>
+            <xsl:value-of select="start-date"/>
+            <xsl:text> - </xsl:text>
+            <xsl:choose>
+                <xsl:when test="end-date">
+                    <xsl:value-of select="end-date"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:text>now</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:text>)&#xD;&#xA;</xsl:text>
+            <xsl:for-each select="project">
+                <xsl:text>Project: </xsl:text>
+                <xsl:value-of select="project-name"/>
+                <xsl:text>&#xD;&#xA;</xsl:text>
+                <xsl:text>Role: </xsl:text>
+                <xsl:value-of select="role"/>
+                <xsl:text>&#xD;&#xA;</xsl:text>
+                <xsl:call-template name="wrap-string">
+                    <xsl:with-param name="str">
+                        <xsl:text>Description: </xsl:text>
+                        <xsl:value-of select="normalize-space(description)"/>
+                        <xsl:text>.</xsl:text>
+                    </xsl:with-param>
+                    <xsl:with-param name="wrap-col">80</xsl:with-param>
+                    <xsl:with-param name="break-mark">
+                        <xsl:text>&#xD;&#xA;</xsl:text>
+                    </xsl:with-param>
+                </xsl:call-template>
+                <xsl:text>&#xD;&#xA;</xsl:text>
+                <xsl:text>&#xD;&#xA;</xsl:text>
+            </xsl:for-each>
+        </xsl:for-each>
     </xsl:template>
     <!-- auxiliary templates -->
     <xsl:template name="section">
