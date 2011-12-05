@@ -7,7 +7,7 @@
     <property file="build.properties"/>
     <property name="lib" value="lib"/>
     <property name="cvgen.filename.external" value="Alexander Dovzhikov's CV"/>
-    <property name="dropbox.dir" value="${dropbox.home}/Resume/CVGen"/>
+    <property name="dropbox.dir" value="${dropbox.home}/Resume/CVGen/finance"/>
     <!-- define conditional properties -->
     <available file="${dropbox.dir}" type="dir" property="dropbox.dir.present"/>
 
