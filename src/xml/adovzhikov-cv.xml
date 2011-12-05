@@ -204,6 +204,21 @@
             <company-location>Saint Petersburg, Russia</company-location>
             <start-date>Apr 2008</start-date>
             <project>
+                <project-name>Market Data Distribution</project-name>
+                <role>Senior Java Developer</role>
+                <description>Services providing reliable delivery of essential market data from different markets</description>
+                <responsibilities>
+                    <responsibility>Analyzed specifications of original data feeds</responsibility>
+                    <responsibility>Implemented distributed components for reliable market data delivery</responsibility>
+                </responsibilities>
+                <environment>
+                    <env-entry>Core Java</env-entry>
+                    <env-entry>Quote Distribution System (QDS)</env-entry>
+                    <env-entry>IDEA</env-entry>
+                    <env-entry>CVS</env-entry>
+                </environment>
+            </project>
+            <project>
                 <project-name>Thinkorswim</project-name>
                 <role>Senior Java Developer</role>
                 <description>Financial software with support for investment and brokerage companies
