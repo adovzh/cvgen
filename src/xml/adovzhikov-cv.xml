@@ -179,7 +179,7 @@
         </cert-provider>
         <cert-provider name="Brainbench" verify-url="http://www.brainbench.com/transcript.jsp?pid=7441065">
             <cert date="2010-09-19" level="Master's">C</cert>
-            <!--<cert date="2008-02-25" expired="true">C++</cert>-->
+            <cert date="2012-02-11" level="Master's">C++</cert>
             <cert date="2008-12-06" level="Master's">Java 5</cert>
             <!--<cert date="2008-08-17" level="Master's" expired="true">Java 2 Fundamentals</cert>-->
             <cert date="2011-03-23" level="Master's">Java 2 - GUI</cert>
