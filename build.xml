@@ -44,6 +44,15 @@
               out="${build}/${cvgen.filename.external}.txt"/>
 	</target>
 
+    <target name="cvgen-au" depends="init" description="Build Au CV">
+        <fop format="application/pdf"
+             force="true"
+             userconfig="${src.config.fonts}/userconfig.xml"
+             xmlfile="${src.cvgen}/adovzhikov-cv.xml"
+             xsltfile="${src.cvgen}/cv-default-2.xsl"
+             outfile="${build}/${cvgen.filename.external}-2.pdf"/>
+    </target>
+
     <target name="clean" description="Delete all built files">
         <delete dir="${build}"/>
     </target>
