@@ -46,6 +46,7 @@
             <language type="native">Russian</language>
             <language type="fluent">English</language>
         </languages>
+        <visa-type>Skilled Independent, eligible to work in Australia</visa-type>
     </personal>
     <education>
         <university>
@@ -58,7 +59,6 @@
             <thesis>Online Training Development System</thesis>
         </university>
     </education>
-    <!-- Here must be some financial information -->
     <objective>Senior Java Developer / Technical Lead position in Financial Services area.</objective>
     <summary>
         <summary-item>Over 10 years of experience in software development</summary-item>

@@ -63,6 +63,7 @@
                 <xs:element name="birthday" type="xs:date"/>
                 <xs:element name="marital-status" type="xs:string"/>
                 <xs:element ref="languages"/>
+                <xs:element name="visa-type" type="xs:string"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
